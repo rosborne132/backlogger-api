@@ -1,0 +1,36 @@
+{
+  "name": "backlogger-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require test/setup.js",
+    "start": "node src/server.js",
+    "migrate": "postgrator --config postgrator-config.js",
+    "predeploy": "npm audit",
+    "deploy": "git push heroku master",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": [],
+  "author": "Robert Osborne",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "helmet": "^3.16.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.16.5",
+    "morgan": "^1.9.1",
+    "pg": "^7.10.0",
+    "xss": "^1.0.3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4",
+    "nodemon": "^1.18.10",
+    "postgrator-cli": "^3.1.0",
+    "supertest": "^4.0.2"
+  }
+}
