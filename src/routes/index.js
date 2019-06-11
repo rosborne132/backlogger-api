@@ -1,5 +1,5 @@
 // Import routes
-const testRouter = require('./testRoute');
+const consoleRouter = require('./consoleRoute');
 
 // Export routes
-module.exports = { testRouter };
+module.exports = { consoleRouter };
