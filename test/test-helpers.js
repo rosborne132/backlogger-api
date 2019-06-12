@@ -10,33 +10,25 @@ function makeUsersArray() {
       id: 1,
       user_name: 'test-user-1',
       full_name: 'Test user 1',
-      nickname: 'TU1',
       password: 'password',
-      date_created: '2029-01-22T16:28:32.615Z',
     },
     {
       id: 2,
       user_name: 'test-user-2',
       full_name: 'Test user 2',
-      nickname: 'TU2',
       password: 'password',
-      date_created: '2029-01-22T16:28:32.615Z',
     },
     {
       id: 3,
       user_name: 'test-user-3',
       full_name: 'Test user 3',
-      nickname: 'TU3',
       password: 'password',
-      date_created: '2029-01-22T16:28:32.615Z',
     },
     {
       id: 4,
       user_name: 'test-user-4',
       full_name: 'Test user 4',
-      nickname: 'TU4',
       password: 'password',
-      date_created: '2029-01-22T16:28:32.615Z',
     },
   ];
 }
@@ -131,28 +123,15 @@ function makeUsersConsolesArray() {
   ];
 }
 
-// function makeMaliciousThing(user) {
-//   const maliciousThing = {
-//     id: 911,
-//     image: 'http://placehold.it/500x500',
-//     date_created: new Date().toISOString(),
-//     title: 'Naughty naughty very naughty <script>alert("xss");</script>',
-//     user_id: user.id,
-//     content: `Bad image <img src="https://url.to.file.which/does-not.exist" onerror="alert(document.cookie);">. But not <strong>all</strong> bad.`,
-//   };
-//   const expectedThing = {
-//     ...makeExpectedThing([user], maliciousThing),
-//     title:
-//       'Naughty naughty very naughty &lt;script&gt;alert("xss");&lt;/script&gt;',
-//     content: `Bad image <img src="https://url.to.file.which/does-not.exist">. But not <strong>all</strong> bad.`,
-//   };
-//   return {
-//     maliciousThing,
-//     expectedThing,
-//   };
-// }
+function getUserConsoles(id) {
+  const userConsoles = makeUsersConsolesArray();
+  const expectedResults = userConsoles.filter(
+    console => (console.user_id = id)
+  );
+  return expectedResults;
+}
 
-function makeThingsFixtures() {
+function makeBacklogFixtures() {
   const testUsers = makeUsersArray();
   // const testGames = makeGamesArray(testUsers);
   const testConsoles = makeConsolesArray();
@@ -171,19 +150,13 @@ function cleanTables(db) {
   );
 }
 
-// function seedThingsTables(db, users, things, reviews = []) {
-//   return db
-//     .into('thingful_users')
-//     .insert(users)
-//     .then(() => db.into('thingful_things').insert(things))
-//     .then(() => reviews.length && db.into('thingful_reviews').insert(reviews));
-// }
-
-// function seedMaliciousThing(db, user, thing) {
-//   return seedUsers(db, [user]).then(() =>
-//     db.into('thingful_things').insert([thing])
-//   );
-// }
+function seedConsoleTables(db, users, consoles, userConsoles) {
+  return db
+    .into('backlogger_users')
+    .insert(users)
+    .then(() => db.into('backlogger_consoles').insert(consoles))
+    .then(() => db.into('backlogger_user_consoles').insert(userConsoles));
+}
 
 function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
   const token = jwt.sign({ user_id: user.id }, secret, {
@@ -197,13 +170,12 @@ module.exports = {
   makeUsersArray,
   // makeGamesArray,
   makeConsolesArray,
-  // makeMaliciousThing,
   makeUsersConsolesArray,
+  getUserConsoles,
 
-  makeThingsFixtures,
+  makeBacklogFixtures,
   cleanTables,
-  // seedThingsTables,
-  // seedMaliciousThing,
+  seedConsoleTables,
   makeAuthHeader,
   seedUsers,
 };

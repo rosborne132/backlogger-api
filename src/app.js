@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
   res.send('Hello, boilerplate!');
 });
 
-app.use(consoleRouter);
+app.use('/api/', consoleRouter);
 
 // Error Handling
 app.use(errorHandler);
