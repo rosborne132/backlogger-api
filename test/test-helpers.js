@@ -33,35 +33,56 @@ function makeUsersArray() {
   ];
 }
 
-function seedUsers(db, users) {
-  const preppedUsers = users.map(user => ({
-    ...user,
-    password: bcrypt.hashSync(user.password, 1),
-  }));
-  return db
-    .into('backlogger_users')
-    .insert(preppedUsers)
-    .then(() =>
-      // update the auto sequence to stay in sync
-      db.raw(`SELECT setval('backlogger_users_id_seq', ?)`, [
-        users[users.length - 1].id,
-      ])
-    );
+function makeGameCovers() {
+  return [
+    {
+      id: 1,
+      game_cover_id: 60970,
+      game_cover_url: 'testGameImageCover.com',
+    },
+    {
+      id: 2,
+      game_cover_id: 24920,
+      game_cover_url: 'testGameImageCover.com',
+    },
+  ];
 }
 
-// function makeGamesArray(users) {
-//   return [
-//     {
-//       id: 1,
-//       title: 'First test thing!',
-//       image: 'http://placehold.it/500x500',
-//       user_id: users[0].id,
-//       date_created: '2029-01-22T16:28:32.615Z',
-//       content:
-//         'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Natus consequuntur deserunt commodi, nobis qui inventore corrupti iusto aliquid debitis unde non.Adipisci, pariatur.Molestiae, libero esse hic adipisci autem neque ?',
-//     },
-//   ];
-// }
+function makeGamesArray(users) {
+  return [
+    {
+      id: 1,
+      name: 'Dark Hunter: Shita Youma no Mori',
+      time_to_complete: '1-10hrs',
+      notes: 'Cant wait to play this game',
+      current_game: false,
+      summary: 'The second part of the Dark Hunter English teaching tool.',
+      storyline: '',
+      game_rating: 0.0,
+      game_id: 24920,
+      console_id: 5,
+      game_cover: 60970,
+      user_id: users[0].id,
+      date_created: '2029-01-22T16:28:32.615Z',
+    },
+    {
+      id: 2,
+      name: 'Call of Duty: Modern Warfare Remastered',
+      time_to_complete: '10-20hrs',
+      notes: 'I played this game a long time ago, so its been awhile',
+      current_game: true,
+      summary:
+        'One of the most critically-acclaimed games in history. Call of Duty 4: Modern Warfare is back, remastered in true high-definition, featuring enhanced textures, rendering, high-dynamic range lighting, and much more to bring a new generation experience to fans.',
+      storyline: '',
+      game_rating: 83.36288503620986,
+      game_id: 24920,
+      console_id: 1,
+      game_cover: 18457,
+      user_id: users[1].id,
+      date_created: '2029-01-22T16:28:32.615Z',
+    },
+  ];
+}
 
 function makeConsolesArray() {
   return [
@@ -93,12 +114,12 @@ function makeUsersConsolesArray() {
     {
       id: 1,
       user_id: 1,
-      console_id: 1,
+      console_id: 5,
     },
     {
       id: 2,
       user_id: 2,
-      console_id: 5,
+      console_id: 1,
     },
     {
       id: 3,
@@ -123,6 +144,55 @@ function makeUsersConsolesArray() {
   ];
 }
 
+function seedUsers(db, users) {
+  const preppedUsers = users.map(user => ({
+    ...user,
+    password: bcrypt.hashSync(user.password, 1),
+  }));
+  return db
+    .into('backlogger_users')
+    .insert(preppedUsers)
+    .then(() =>
+      // update the auto sequence to stay in sync
+      db.raw(`SELECT setval('backlogger_users_id_seq', ?)`, [
+        users[users.length - 1].id,
+      ])
+    );
+}
+
+function seedConsolesTable(db, consoles) {
+  return db
+    .into('backlogger_consoles')
+    .insert(consoles)
+    .then(() =>
+      db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
+        consoles[consoles.length - 1].id,
+      ])
+    );
+}
+
+function seedGameImagesTable(db, gameImages) {
+  return db
+    .into('backlogger_game_images')
+    .insert(gameImages)
+    .then(() =>
+      db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
+        gameImages[gameImages.length - 1].id,
+      ])
+    );
+}
+
+function seedGamesTable(db, games) {
+  return db
+    .into('backlogger_user_games')
+    .insert(games)
+    .then(() =>
+      db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
+        games[games.length - 1].id,
+      ])
+    );
+}
+
 function getUserConsoles(id) {
   const userConsoles = makeUsersConsolesArray();
   const expectedResults = userConsoles.filter(
@@ -133,11 +203,18 @@ function getUserConsoles(id) {
 
 function makeBacklogFixtures() {
   const testUsers = makeUsersArray();
-  // const testGames = makeGamesArray(testUsers);
+  const testGames = makeGamesArray(testUsers);
   const testConsoles = makeConsolesArray();
   const testUserConsoles = makeUsersConsolesArray();
+  const gameCoverImages = makeGameCovers();
 
-  return { testUsers, testConsoles, testUserConsoles };
+  return {
+    testUsers,
+    testConsoles,
+    testUserConsoles,
+    testGames,
+    gameCoverImages,
+  };
 }
 
 function cleanTables(db) {
@@ -145,7 +222,9 @@ function cleanTables(db) {
     `TRUNCATE
       backlogger_consoles,
       backlogger_users,
-      backlogger_user_consoles
+      backlogger_user_consoles,
+      backlogger_user_games,
+      backlogger_game_images
       RESTART IDENTITY CASCADE`
   );
 }
@@ -168,7 +247,7 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 
 module.exports = {
   makeUsersArray,
-  // makeGamesArray,
+  makeGamesArray,
   makeConsolesArray,
   makeUsersConsolesArray,
   getUserConsoles,
@@ -178,4 +257,7 @@ module.exports = {
   seedConsoleTables,
   makeAuthHeader,
   seedUsers,
+  seedConsolesTable,
+  seedGameImagesTable,
+  seedGamesTable,
 };

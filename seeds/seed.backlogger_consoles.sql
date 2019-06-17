@@ -70,5 +70,5 @@ VALUES
   ('New Nintendo 3DS'),
   ('Nintendo 3DS'),
   ('Nintendo DS'),
-  ('Atari Lynx'),
+  ('Atari Lynx');
   

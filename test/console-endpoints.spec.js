@@ -91,20 +91,26 @@ describe.only('Console Endpoints', function() {
     });
   });
 
-  describe.only(`POST /console`, () => {
-    it(`creates an article, responding with 201 and the new article`, function() {
+  describe(`POST /console`, () => {
+    beforeEach(() => {
+      helpers.seedUsers(db, testUsers);
+      helpers.seedConsolesTable(db, testConsoles);
+    });
+    it(`creates an console, responding with 201 and the new console`, function() {
+      // this.retries(3);
       const newUserConsole = {
         user_id: 2,
         console_id: 3,
       };
       return supertest(app)
-        .post('/consoles')
+        .post(`/api/console`)
         .send(newUserConsole)
         .expect(201)
         .expect(res => {
           expect(res.body.user_id).to.eql(newUserConsole.user_id);
           expect(res.body.console_id).to.eql(newUserConsole.console_id);
           expect(res.body).to.have.property('id');
+          expect(res.headers.location).to.eql(`console/${res.body.console_id}`);
         });
     });
   });
