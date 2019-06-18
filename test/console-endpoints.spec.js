@@ -97,7 +97,7 @@ describe.only('Console Endpoints', function() {
       helpers.seedConsolesTable(db, testConsoles);
     });
     it(`creates an console, responding with 201 and the new console`, function() {
-      // this.retries(3);
+      this.retries(3);
       const newUserConsole = {
         user_id: 2,
         console_id: 3,

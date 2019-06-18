@@ -33,22 +33,7 @@ function makeUsersArray() {
   ];
 }
 
-function makeGameCovers() {
-  return [
-    {
-      id: 1,
-      game_cover_id: 60970,
-      game_cover_url: 'testGameImageCover.com',
-    },
-    {
-      id: 2,
-      game_cover_id: 24920,
-      game_cover_url: 'testGameImageCover.com',
-    },
-  ];
-}
-
-function makeGamesArray(users) {
+function makeUsersGamesArray() {
   return [
     {
       id: 1,
@@ -60,10 +45,9 @@ function makeGamesArray(users) {
       storyline: '',
       game_rating: 0.0,
       game_id: 24920,
-      console_id: 5,
+      user_console_id: 5,
       game_cover: 60970,
-      user_id: users[0].id,
-      date_created: '2029-01-22T16:28:32.615Z',
+      game_user_id: 1,
     },
     {
       id: 2,
@@ -76,10 +60,9 @@ function makeGamesArray(users) {
       storyline: '',
       game_rating: 83.36288503620986,
       game_id: 24920,
-      console_id: 1,
+      user_console_id: 1,
       game_cover: 18457,
-      user_id: users[1].id,
-      date_created: '2029-01-22T16:28:32.615Z',
+      game_user_id: 2,
     },
   ];
 }
@@ -171,17 +154,6 @@ function seedConsolesTable(db, consoles) {
     );
 }
 
-function seedGameImagesTable(db, gameImages) {
-  return db
-    .into('backlogger_game_images')
-    .insert(gameImages)
-    .then(() =>
-      db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
-        gameImages[gameImages.length - 1].id,
-      ])
-    );
-}
-
 function seedGamesTable(db, games) {
   return db
     .into('backlogger_user_games')
@@ -201,19 +173,23 @@ function getUserConsoles(id) {
   return expectedResults;
 }
 
+function getUserGames(id) {
+  const userGames = makeUsersConsolesArray();
+  const expectedResults = userGames.filter(game => (game.game_user_id = id));
+  return expectedResults;
+}
+
 function makeBacklogFixtures() {
   const testUsers = makeUsersArray();
-  const testGames = makeGamesArray(testUsers);
+  const testGames = makeUsersGamesArray(testUsers);
   const testConsoles = makeConsolesArray();
   const testUserConsoles = makeUsersConsolesArray();
-  const gameCoverImages = makeGameCovers();
 
   return {
     testUsers,
     testConsoles,
     testUserConsoles,
     testGames,
-    gameCoverImages,
   };
 }
 
@@ -223,8 +199,7 @@ function cleanTables(db) {
       backlogger_consoles,
       backlogger_users,
       backlogger_user_consoles,
-      backlogger_user_games,
-      backlogger_game_images
+      backlogger_user_games
       RESTART IDENTITY CASCADE`
   );
 }
@@ -247,10 +222,11 @@ function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
 
 module.exports = {
   makeUsersArray,
-  makeGamesArray,
+  makeUsersGamesArray,
   makeConsolesArray,
   makeUsersConsolesArray,
   getUserConsoles,
+  getUserGames,
 
   makeBacklogFixtures,
   cleanTables,
@@ -258,6 +234,5 @@ module.exports = {
   makeAuthHeader,
   seedUsers,
   seedConsolesTable,
-  seedGameImagesTable,
   seedGamesTable,
 };

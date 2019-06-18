@@ -7,7 +7,7 @@ const helmet = require('helmet');
 require('dotenv').config();
 const { NODE_ENV, CLIENT_ORIGIN_LOCAL } = require('./config');
 const errorHandler = require('./errorHandling');
-const { consoleRouter } = require('./routes');
+const { consoleRouter, gameRouter } = require('./routes');
 
 const app = express();
 
@@ -25,11 +25,8 @@ app.use(
 
 app.use(helmet());
 
-app.get('/', (req, res) => {
-  res.send('Hello, boilerplate!');
-});
-
 app.use('/api/', consoleRouter);
+app.use('/api/', gameRouter);
 
 // Error Handling
 app.use(errorHandler);

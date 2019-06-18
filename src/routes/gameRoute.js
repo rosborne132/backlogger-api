@@ -2,12 +2,12 @@
 const express = require('express');
 const GameService = require('../services/gameService');
 
-const consoleRouter = express.Router();
+const gameRouter = express.Router();
 const bodyParser = express.json();
 
 const { requireAuth } = require('../middleware/basic-auth');
 
-consoleRouter.route('/game').post(bodyParser, (req, res, next) => {
+gameRouter.route('/game').post(bodyParser, (req, res, next) => {
   const knexInstance = req.app.get('db');
   const {
     name,
@@ -37,6 +37,18 @@ consoleRouter.route('/game').post(bodyParser, (req, res, next) => {
     user_id,
   };
 
+  if (console_id == null) {
+    return res.status(400).json({
+      error: { message: `Missing console_id in request body` },
+    });
+  }
+
+  if (name == null) {
+    return res.status(400).json({
+      error: { message: `Missing console_id in request body` },
+    });
+  }
+
   GameService.insertUserGame(knexInstance, newUserGame)
     .then(games => {
       res
@@ -47,20 +59,20 @@ consoleRouter.route('/game').post(bodyParser, (req, res, next) => {
     .catch(next);
 });
 
-consoleRouter
+gameRouter
   .route('/game/:user_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
-    GameService.getAllUserGames(knexInstance, req.params.user_id)
+    GameService.getAllUserGames(knexInstance, req.params.game_user_id)
       .then(games => {
         if (!games) {
           return res.status(404).json({
-            error: { message: `Game does not exist` },
+            error: { message: `Games do not exist` },
           });
         }
         res.json(games);
       })
-      .catch(next);
+      .catch(err => console.log(err));
   })
   .patch(bodyParser, (req, res, next) => {
     const {
@@ -102,4 +114,4 @@ consoleRouter
       .catch(next);
   });
 
-module.exports = consoleRouter;
+module.exports = gameRouter;
