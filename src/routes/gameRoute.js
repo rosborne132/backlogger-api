@@ -63,7 +63,8 @@ gameRouter
   .route('/game/:user_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
-    GameService.getAllUserGames(knexInstance, req.params.game_user_id)
+    GameService.getAllGames(knexInstance).then(games => console.log(games));
+    GameService.getAllUserGames(knexInstance, req.params.user_id)
       .then(games => {
         if (!games) {
           return res.status(404).json({

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable no-undef */
 const knex = require('knex');
 const jwt = require('jsonwebtoken');
@@ -37,7 +38,7 @@ describe.only('Game Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  describe.only(`GET /api/games/:user_id`, () => {
+  describe.only(`GET /api/game/:user_id`, () => {
     xcontext(`Given no games`, () => {
       beforeEach(() => {
         helpers.seedUsers(db, testUsers);
@@ -59,15 +60,16 @@ describe.only('Game Endpoints', function() {
       beforeEach('insert games', () => {
         helpers.seedUsers(db, testUsers);
         helpers.seedConsolesTable(db, testConsoles);
+        console.log(helpers.seedGamesTable(db, testGames));
         helpers.seedGamesTable(db, testGames);
       });
 
       it('responds with 200 and the specified console', () => {
-        const user = 1;
-        const expectedThing = helpers.getUserGames(user);
+        const user_id = 1;
+        const expectedThing = helpers.getUserGames(user_id);
 
         return supertest(app)
-          .get(`/api/game/${user}`)
+          .get(`/api/game/1`)
           .set('Authorization', makeAuthHeader(testUsers[0]))
           .expect(200, expectedThing);
       });

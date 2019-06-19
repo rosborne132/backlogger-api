@@ -36,8 +36,7 @@ function makeUsersArray() {
 function makeUsersGamesArray() {
   return [
     {
-      id: 1,
-      name: 'Dark Hunter: Shita Youma no Mori',
+      title: 'Dark Hunter: Shita Youma no Mori',
       time_to_complete: '1-10hrs',
       notes: 'Cant wait to play this game',
       current_game: false,
@@ -45,13 +44,12 @@ function makeUsersGamesArray() {
       storyline: '',
       game_rating: 0.0,
       game_id: 24920,
-      user_console_id: 5,
       game_cover: 60970,
-      game_user_id: 1,
+      user_console_id: 5,
+      user_id: 1,
     },
     {
-      id: 2,
-      name: 'Call of Duty: Modern Warfare Remastered',
+      title: 'Call of Duty: Modern Warfare Remastered',
       time_to_complete: '10-20hrs',
       notes: 'I played this game a long time ago, so its been awhile',
       current_game: true,
@@ -60,9 +58,22 @@ function makeUsersGamesArray() {
       storyline: '',
       game_rating: 83.36288503620986,
       game_id: 24920,
-      user_console_id: 1,
       game_cover: 18457,
-      game_user_id: 2,
+      user_console_id: 1,
+      user_id: 2,
+    },
+    {
+      title: 'test',
+      time_to_complete: '20-30hrs',
+      notes: 'This test has been a real pain in the butt',
+      current_game: false,
+      summary: 'This is a test game',
+      storyline: '',
+      game_rating: 2.5,
+      game_id: 246,
+      game_cover: 2543,
+      user_console_id: 1,
+      user_id: 1,
     },
   ];
 }
@@ -155,11 +166,12 @@ function seedConsolesTable(db, consoles) {
 }
 
 function seedGamesTable(db, games) {
+  console.log(games);
   return db
     .into('backlogger_user_games')
     .insert(games)
     .then(() =>
-      db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
+      db.raw(`SELECT setval('backlogger_user_games_id_seq', ?)`, [
         games[games.length - 1].id,
       ])
     );
@@ -168,14 +180,14 @@ function seedGamesTable(db, games) {
 function getUserConsoles(id) {
   const userConsoles = makeUsersConsolesArray();
   const expectedResults = userConsoles.filter(
-    console => (console.user_id = id)
+    console => console.user_id === id
   );
   return expectedResults;
 }
 
 function getUserGames(id) {
-  const userGames = makeUsersConsolesArray();
-  const expectedResults = userGames.filter(game => (game.game_user_id = id));
+  const userGames = makeUsersGamesArray();
+  const expectedResults = userGames.filter(game => game.user_id === id);
   return expectedResults;
 }
 

@@ -1,0 +1,15 @@
+INSERT INTO backlogger_user_games (title, time_to_complete, notes, current_game, summary, storyline, game_rating, game_cover, game_id, user_console_id, user_id)
+    VALUES
+        (
+            'Dark Hunter: Shita Youma no Mori', 
+            '1-10hrs', 
+            'Cant wait to play this game', 
+            false,
+            'The second part of the Dark Hunter English teaching tool.',
+            '',
+            1.20,
+            12,
+            432,
+            4,
+            1
+        );

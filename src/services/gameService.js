@@ -1,9 +1,12 @@
 const GameService = {
+  getAllGames(knex) {
+    return knex.select('*').from('backlogger_user_games');
+  },
   getAllUserGames(knex, id) {
     return knex
       .select('*')
       .from('backlogger_user_games')
-      .where('game_user_id', id);
+      .where('user_id', id);
   },
   insertUserGame(knex, newUserGame) {
     return knex
