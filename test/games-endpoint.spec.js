@@ -60,7 +60,7 @@ describe.only('Game Endpoints', function() {
       beforeEach('insert games', () => {
         helpers.seedUsers(db, testUsers);
         helpers.seedConsolesTable(db, testConsoles);
-        console.log(helpers.seedGamesTable(db, testGames));
+        helpers.seedUserConsoleTable(db, testUserConsoles);
         helpers.seedGamesTable(db, testGames);
       });
 

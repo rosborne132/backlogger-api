@@ -43,9 +43,8 @@ function makeUsersGamesArray() {
       summary: 'The second part of the Dark Hunter English teaching tool.',
       storyline: '',
       game_rating: 0.0,
-      game_id: 24920,
-      game_cover: 60970,
-      user_console_id: 5,
+      game_cover: 'image1.com',
+      console_id: 5,
       user_id: 1,
     },
     {
@@ -57,9 +56,8 @@ function makeUsersGamesArray() {
         'One of the most critically-acclaimed games in history. Call of Duty 4: Modern Warfare is back, remastered in true high-definition, featuring enhanced textures, rendering, high-dynamic range lighting, and much more to bring a new generation experience to fans.',
       storyline: '',
       game_rating: 83.36288503620986,
-      game_id: 24920,
-      game_cover: 18457,
-      user_console_id: 1,
+      game_cover: 'image1.com',
+      console_id: 1,
       user_id: 2,
     },
     {
@@ -70,9 +68,8 @@ function makeUsersGamesArray() {
       summary: 'This is a test game',
       storyline: '',
       game_rating: 2.5,
-      game_id: 246,
-      game_cover: 2543,
-      user_console_id: 1,
+      game_cover: 'image.com',
+      console_id: 1,
       user_id: 1,
     },
   ];
@@ -166,14 +163,24 @@ function seedConsolesTable(db, consoles) {
 }
 
 function seedGamesTable(db, games) {
-  console.log(games);
   return db
     .into('backlogger_user_games')
     .insert(games)
     .then(() =>
-      db.raw(`SELECT setval('backlogger_user_games_id_seq', ?)`, [
-        games[games.length - 1].id,
-      ])
+      db.raw(
+        `SELECT setval('backlogger_user_games_id_seq', (SELECT MAX(id) FROM backlogger_user_games))`
+      )
+    );
+}
+
+function seedUserConsoleTable(db, consoles) {
+  return db
+    .into('backlogger_user_consoles')
+    .insert(consoles)
+    .then(() =>
+      db.raw(
+        `SELECT setval('backlogger_user_consoles_id_seq', (SELECT MAX(id) FROM backlogger_user_consoles))`
+      )
     );
 }
 
@@ -246,5 +253,6 @@ module.exports = {
   makeAuthHeader,
   seedUsers,
   seedConsolesTable,
+  seedUserConsoleTable,
   seedGamesTable,
 };

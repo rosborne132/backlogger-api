@@ -7,17 +7,8 @@ CREATE TABLE backlogger_user_games (
   summary TEXT,
   storyline TEXT,
   game_rating FLOAT,
-  game_cover INT,
-  game_id INTEGER,
+  game_cover TEXT,
+  console_id INTEGER REFERENCES backlogger_consoles(id) ON DELETE CASCADE NOT NULL,
+  user_id INTEGER REFERENCES backlogger_users(id) ON DELETE CASCADE NOT NULL,
   date_created TIMESTAMP NOT NULL DEFAULT now()
 );
-
-ALTER TABLE backlogger_user_games
-  ADD COLUMN
-    user_console_id INTEGER REFERENCES backlogger_consoles(id)
-    ON DELETE SET NULL;
-
-ALTER TABLE backlogger_user_games
-  ADD COLUMN
-    user_id INTEGER REFERENCES backlogger_users(id)
-    ON DELETE SET NULL;
