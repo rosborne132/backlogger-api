@@ -36,6 +36,7 @@ function makeUsersArray() {
 function makeUsersGamesArray() {
   return [
     {
+      id: 1,
       title: 'Dark Hunter: Shita Youma no Mori',
       time_to_complete: '1-10hrs',
       notes: 'Cant wait to play this game',
@@ -48,6 +49,7 @@ function makeUsersGamesArray() {
       user_id: 1,
     },
     {
+      id: 2,
       title: 'Call of Duty: Modern Warfare Remastered',
       time_to_complete: '10-20hrs',
       notes: 'I played this game a long time ago, so its been awhile',
@@ -61,6 +63,7 @@ function makeUsersGamesArray() {
       user_id: 2,
     },
     {
+      id: 3,
       title: 'test',
       time_to_complete: '20-30hrs',
       notes: 'This test has been a real pain in the butt',
@@ -144,7 +147,6 @@ function seedUsers(db, users) {
     .into('backlogger_users')
     .insert(preppedUsers)
     .then(() =>
-      // update the auto sequence to stay in sync
       db.raw(`SELECT setval('backlogger_users_id_seq', ?)`, [
         users[users.length - 1].id,
       ])
@@ -166,10 +168,14 @@ function seedGamesTable(db, games) {
   return db
     .into('backlogger_user_games')
     .insert(games)
-    .then(() =>
-      db.raw(
-        `SELECT setval('backlogger_user_games_id_seq', (SELECT MAX(id) FROM backlogger_user_games))`
-      )
+    .then(
+      () =>
+        db.raw(
+          `SELECT setval('backlogger_user_games_id_seq', (SELECT MAX(id) FROM backlogger_user_games))`
+        )
+      // db.raw(`SELECT setval('backlogger_user_games_id_seq', ?)`, [
+      //   games[games.length - 1].id,
+      // ])
     );
 }
 

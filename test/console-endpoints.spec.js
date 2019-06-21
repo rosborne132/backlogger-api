@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const app = require('../src/app');
 const helpers = require('./test-helpers');
 
-describe.only('Console Endpoints', function() {
+describe('Console Endpoints', function() {
   let db;
 
   const {
@@ -59,21 +59,7 @@ describe.only('Console Endpoints', function() {
     });
   });
 
-  xdescribe(`GET /api/console/:user_id`, () => {
-    context(`Given no consoles`, () => {
-      beforeEach(() => helpers.seedUsers(db, testUsers));
-
-      it(`responds with 404`, () => {
-        const userId = 12353;
-        return supertest(app)
-          .get(`/api/console/${userId}`)
-          .set('Authorization', makeAuthHeader(testUsers[0]))
-          .expect(404, {
-            error: `Console does not exist`,
-          });
-      });
-    });
-
+  describe(`GET /api/console/:user_id`, () => {
     context('Given there are consoles in the database', () => {
       beforeEach('insert consoles', () =>
         helpers.seedConsoleTables(db, testUsers, testConsoles, testUserConsoles)

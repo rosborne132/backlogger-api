@@ -17,9 +17,8 @@ gameRouter.route('/game').post(bodyParser, (req, res, next) => {
     summary,
     storyline,
     game_rating,
-    game_id,
     game_cover,
-    user_console_id,
+    console_id,
     user_id,
   } = req.body;
 
@@ -31,32 +30,35 @@ gameRouter.route('/game').post(bodyParser, (req, res, next) => {
     summary,
     storyline,
     game_rating,
-    game_id,
     game_cover,
-    user_console_id,
+    console_id,
     user_id,
   };
 
-  if (user_console_id == null) {
-    return res.status(400).json({
-      error: { message: `Missing console_id in request body` },
-    });
-  }
+  const requiredFields = {
+    current_game,
+    title,
+    time_to_complete,
+    console_id,
+    user_id,
+  };
 
-  if (title == null) {
-    return res.status(400).json({
-      error: { message: `Missing console_id in request body` },
-    });
+  for (const [key, value] of Object.entries(requiredFields)) {
+    if (value == null) {
+      return res.status(400).json({
+        error: { message: `Missing '${key}' in request body` },
+      });
+    }
   }
 
   GameService.insertUserGame(knexInstance, newUserGame)
     .then(games => {
       res
         .status(201)
-        .location(`game/${games.console_id}`)
+        .location(`game/${games.user_id}`)
         .json(games);
     })
-    .catch(next);
+    .catch(err => console.log(err));
 });
 
 gameRouter
@@ -75,7 +77,6 @@ gameRouter
       time_to_complete,
       notes,
       current_game,
-      game_id,
       console_id,
     } = req.body;
 
@@ -84,7 +85,6 @@ gameRouter
       time_to_complete,
       notes,
       current_game,
-      game_id,
       console_id,
     };
 
@@ -99,14 +99,15 @@ gameRouter
       .catch(next);
   })
   .delete((req, res, next) => {
-    const { game_id } = req.params;
+    const { id } = req.params;
+    console.log(id);
     const knexInstance = req.app.get('db');
 
-    GameService.deleteUserGame(knexInstance, game_id)
+    GameService.deleteUserGame(knexInstance, id)
       .then(numRowsAffected => {
         res.status(204).end();
       })
-      .catch(next);
+      .catch(err => console.log(err));
   });
 
 module.exports = gameRouter;
