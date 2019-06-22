@@ -39,7 +39,8 @@ consoleRouter
 
 consoleRouter.route('/console/:user_id').get((req, res, next) => {
   const knexInstance = req.app.get('db');
-  ConsoleService.getAllUserConsoles(knexInstance, req.params.user_id)
+  const { user_id } = req.params;
+  ConsoleService.getAllUserConsoles(knexInstance, user_id)
     .then(consoles => {
       if (!consoles) {
         return res.status(404).json({

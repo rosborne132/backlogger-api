@@ -1,4 +1,4 @@
-INSERT INTO backlogger_user_games (title, time_to_complete, notes, current_game, summary, storyline, game_rating, game_cover, game_id, user_console_id, user_id)
+INSERT INTO backlogger_user_games (title, time_to_complete, notes, current_game, summary, storyline, game_rating, game_cover, console_id, user_id)
     VALUES
         (
             'Dark Hunter: Shita Youma no Mori', 

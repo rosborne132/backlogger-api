@@ -1,5 +1,5 @@
-/* eslint-disable camelcase */
 /* eslint-disable no-undef */
+/* eslint-disable camelcase */
 const knex = require('knex');
 const jwt = require('jsonwebtoken');
 const app = require('../src/app');
@@ -8,19 +8,13 @@ const helpers = require('./test-helpers');
 describe('Game Endpoints', function() {
   let db;
 
-  const {
-    testUsers,
-    testConsoles,
-    testUserConsoles,
-    testGames,
-  } = helpers.makeBacklogFixtures();
+  const { testUsers, testConsoles, testGames } = helpers.makeBacklogFixtures();
 
   function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
     const token = jwt.sign({ user_id: user.id }, secret, {
       subject: user.user_name,
       algorithm: 'HS256',
     });
-
     return `Bearer ${token}`;
   }
 
@@ -38,47 +32,29 @@ describe('Game Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
-  // describe(`GET /api/game`, () => {
-  //   context('Given there are user games in the database', () => {
-  //     beforeEach('insert games', () => {
-  //       helpers.seedUsers(db, testUsers);
-  //       helpers.seedConsolesTable(db, testConsoles);
-  //       helpers.seedUserConsoleTable(db, testUserConsoles);
-  //       helpers.seedGamesTable(db, testGames);
-  //     });
+  describe(`GET /api/game/:user_id`, () => {
+    context('Given there are user games in the database', () => {
+      beforeEach('insert games', () => {
+        helpers.seedUsers(db, testUsers);
+        helpers.seedConsolesTable(db, testConsoles);
+        helpers.seedGamesTable(db, testGames);
+      });
 
-  //     it(`responds with 200 and all of the games in the db`, () =>
-  //       supertest(app)
-  //         .get(`/api/game`)
-  //         .expect(200, testGames));
-  //   });
-  // });
-
-  // describe(`GET /api/game/:user_id`, () => {
-  //   xcontext('Given there are user games in the database', () => {
-  //     beforeEach('insert games', () => {
-  //       helpers.seedUsers(db, testUsers);
-  //       helpers.seedConsolesTable(db, testConsoles);
-  //       helpers.seedUserConsoleTable(db, testUserConsoles);
-  //       helpers.seedGamesTable(db, testGames);
-  //     });
-
-  //     it('responds with 200 and the specified console', () => {
-  //       const user_id = 1;
-  //       const expectedThing = helpers.getUserGames(user_id);
-
-  //       return supertest(app)
-  //         .get(`/api/game/1`)
-  //         .expect(200, expectedThing);
-  //     });
-  //   });
-  // });
+      it('responds with 200 and the specified user games', () => {
+        const user_id = 1;
+        return supertest(app)
+          .get(`/api/game/${user_id}`)
+          .expect(200);
+      });
+    });
+  });
 
   describe(`POST /game`, () => {
     beforeEach(() => {
       helpers.seedUsers(db, testUsers);
       helpers.seedConsolesTable(db, testConsoles);
     });
+
     it(`creates a user game, responding with 201 and the new game`, function() {
       this.retries(3);
       const newUserGame = {
@@ -91,9 +67,10 @@ describe('Game Endpoints', function() {
         storyline: '',
         game_rating: 0.0,
         game_cover: 'image1.com',
-        console_id: 4,
+        console_id: 2,
         user_id: 1,
       };
+
       return supertest(app)
         .post(`/api/game`)
         .send(newUserGame)
@@ -121,21 +98,14 @@ describe('Game Endpoints', function() {
       'title',
       'time_to_complete',
       'console_id',
-      'user_id',
     ];
 
     requiredFields.forEach(field => {
       const newUserGame = {
         title: 'Dark Hunter: Shita Youma no Mori',
         time_to_complete: '1-10hrs',
-        notes: 'Cant wait to play this game',
         current_game: false,
-        summary: 'The second part of the Dark Hunter English teaching tool.',
-        storyline: '',
-        game_rating: 0.0,
-        game_cover: 'image1.com',
         console_id: 5,
-        user_id: 2,
       };
 
       it(`responds with 400 and an error message when the '${field}' is missing`, () => {
@@ -161,15 +131,36 @@ describe('Game Endpoints', function() {
 
       it('responds with 204 and removes the game', () => {
         const idToRemove = 1;
-        const expectedGames = testGames.filter(game => game.id !== idToRemove);
         return supertest(app)
           .delete(`/api/game/${idToRemove}`)
           .expect(204);
-        // .then(res =>
-        //   supertest(app)
-        //     .get(`/api/game`)
-        //     .expect(expectedGames)
-        // );
+      });
+    });
+  });
+
+  describe(`PATCH /api/game/:game_id`, () => {
+    context('Given there are games in the database', () => {
+      beforeEach(() => {
+        helpers.seedUsers(db, testUsers);
+        helpers.seedConsolesTable(db, testConsoles);
+        helpers.seedGamesTable(db, testGames);
+      });
+
+      it('responds with 204 and updates the game', () => {
+        const idToUpdate = 1;
+        const updateGame = {
+          title: 'Dark Hunter',
+          time_to_complete: '10-20hrs',
+          notes:
+            'After playing this game for a little bit, I think its going to take longer than expected',
+          current_game: true,
+          console_id: 5,
+        };
+
+        return supertest(app)
+          .patch(`/api/game/${idToUpdate}`)
+          .send(updateGame)
+          .expect(204);
       });
     });
   });

@@ -147,11 +147,8 @@ function seedUsers(db, users) {
     .into('backlogger_users')
     .insert(preppedUsers)
     .then(() =>
-      // db.raw(
-      //   `SELECT setval('backlogger_users_id_seq', (SELECT MAX(id) FROM backlogger_users))`
-      // )
       db.raw(`SELECT setval('backlogger_users_id_seq', ?)`, [
-        users[users.length - 1].id,
+        preppedUsers[preppedUsers.length - 1].id,
       ])
     );
 }
@@ -161,9 +158,6 @@ function seedConsolesTable(db, consoles) {
     .into('backlogger_consoles')
     .insert(consoles)
     .then(() =>
-      // db.raw(
-      //   `SELECT setval('backlogger_consoles_id_seq', (SELECT MAX(id) FROM backlogger_consoles))`
-      // )
       db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
         consoles[consoles.length - 1].id,
       ])
@@ -175,9 +169,6 @@ function seedGamesTable(db, games) {
     .into('backlogger_user_games')
     .insert(games)
     .then(() =>
-      // db.raw(
-      //   `SELECT setval('backlogger_user_games_id_seq', (SELECT MAX(id) FROM backlogger_user_games))`
-      // )
       db.raw(`SELECT setval('backlogger_user_games_id_seq', ?)`, [
         games[games.length - 1].id,
       ])
@@ -188,14 +179,10 @@ function seedUserConsoleTable(db, consoles) {
   return db
     .into('backlogger_user_consoles')
     .insert(consoles)
-    .then(
-      () =>
-        db.raw(
-          `SELECT setval('backlogger_user_consoles_id_seq', (SELECT MAX(id) FROM backlogger_user_consoles))`
-        )
-      // db.raw(`SELECT setval('backlogger_user_consoles_id_seq', ?)`, [
-      //   consoles[consoles.length - 1].id,
-      // ])
+    .then(() =>
+      db.raw(
+        `SELECT setval('backlogger_user_consoles_id_seq', (SELECT MAX(id) FROM backlogger_user_consoles))`
+      )
     );
 }
 
@@ -204,12 +191,6 @@ function getUserConsoles(id) {
   const expectedResults = userConsoles.filter(
     console => console.user_id === id
   );
-  return expectedResults;
-}
-
-function getUserGames(id) {
-  const userGames = makeUsersGamesArray();
-  const expectedResults = userGames.filter(game => game.user_id === id);
   return expectedResults;
 }
 
@@ -260,7 +241,6 @@ module.exports = {
   makeConsolesArray,
   makeUsersConsolesArray,
   getUserConsoles,
-  getUserGames,
 
   makeBacklogFixtures,
   cleanTables,
