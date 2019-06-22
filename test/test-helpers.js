@@ -147,6 +147,9 @@ function seedUsers(db, users) {
     .into('backlogger_users')
     .insert(preppedUsers)
     .then(() =>
+      // db.raw(
+      //   `SELECT setval('backlogger_users_id_seq', (SELECT MAX(id) FROM backlogger_users))`
+      // )
       db.raw(`SELECT setval('backlogger_users_id_seq', ?)`, [
         users[users.length - 1].id,
       ])
@@ -158,6 +161,9 @@ function seedConsolesTable(db, consoles) {
     .into('backlogger_consoles')
     .insert(consoles)
     .then(() =>
+      // db.raw(
+      //   `SELECT setval('backlogger_consoles_id_seq', (SELECT MAX(id) FROM backlogger_consoles))`
+      // )
       db.raw(`SELECT setval('backlogger_consoles_id_seq', ?)`, [
         consoles[consoles.length - 1].id,
       ])
@@ -168,14 +174,13 @@ function seedGamesTable(db, games) {
   return db
     .into('backlogger_user_games')
     .insert(games)
-    .then(
-      () =>
-        db.raw(
-          `SELECT setval('backlogger_user_games_id_seq', (SELECT MAX(id) FROM backlogger_user_games))`
-        )
-      // db.raw(`SELECT setval('backlogger_user_games_id_seq', ?)`, [
-      //   games[games.length - 1].id,
-      // ])
+    .then(() =>
+      // db.raw(
+      //   `SELECT setval('backlogger_user_games_id_seq', (SELECT MAX(id) FROM backlogger_user_games))`
+      // )
+      db.raw(`SELECT setval('backlogger_user_games_id_seq', ?)`, [
+        games[games.length - 1].id,
+      ])
     );
 }
 
@@ -183,10 +188,14 @@ function seedUserConsoleTable(db, consoles) {
   return db
     .into('backlogger_user_consoles')
     .insert(consoles)
-    .then(() =>
-      db.raw(
-        `SELECT setval('backlogger_user_consoles_id_seq', (SELECT MAX(id) FROM backlogger_user_consoles))`
-      )
+    .then(
+      () =>
+        db.raw(
+          `SELECT setval('backlogger_user_consoles_id_seq', (SELECT MAX(id) FROM backlogger_user_consoles))`
+        )
+      // db.raw(`SELECT setval('backlogger_user_consoles_id_seq', ?)`, [
+      //   consoles[consoles.length - 1].id,
+      // ])
     );
 }
 
