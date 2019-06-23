@@ -23,6 +23,7 @@ consoleRouter
       .catch(next);
   })
   .post(bodyParser, (req, res, next) => {
+    // .post(requireAuth, bodyParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
     const { console_id, user_id } = req.body;
     const newUserConsole = { console_id, user_id };
@@ -37,19 +38,22 @@ consoleRouter
       .catch(next);
   });
 
-consoleRouter.route('/console/:user_id').get((req, res, next) => {
-  const knexInstance = req.app.get('db');
-  const { user_id } = req.params;
-  ConsoleService.getAllUserConsoles(knexInstance, user_id)
-    .then(consoles => {
-      if (!consoles) {
-        return res.status(404).json({
-          error: { message: `Console does not exist` },
-        });
-      }
-      res.json(consoles);
-    })
-    .catch(next);
-});
+consoleRouter
+  .route('/console/:user_id')
+  // .all(requireAuth)
+  .get((req, res, next) => {
+    const knexInstance = req.app.get('db');
+    const { user_id } = req.params;
+    ConsoleService.getAllUserConsoles(knexInstance, user_id)
+      .then(consoles => {
+        if (!consoles) {
+          return res.status(404).json({
+            error: { message: `Console does not exist` },
+          });
+        }
+        res.json(consoles);
+      })
+      .catch(next);
+  });
 
 module.exports = consoleRouter;

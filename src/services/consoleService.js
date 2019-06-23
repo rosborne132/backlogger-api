@@ -4,8 +4,9 @@ const ConsoleService = {
   },
   getAllUserConsoles(knex, id) {
     return knex
-      .select('*')
-      .from('backlogger_user_consoles')
+      .select('uc.*', 'c.title')
+      .from('backlogger_user_consoles AS uc')
+      .join('backlogger_consoles AS c', 'uc.console_id', 'c.id')
       .where('user_id', id);
   },
   insertUserConsole(knex, newUserConsole) {

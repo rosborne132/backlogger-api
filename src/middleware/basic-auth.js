@@ -21,7 +21,7 @@ function requireAuth(req, res, next) {
   }
 
   req.app
-    .get('db')('thingful_users')
+    .get('db')('backlogger_users')
     .where({ user_name: tokenUserName })
     .first()
     .then(user => {

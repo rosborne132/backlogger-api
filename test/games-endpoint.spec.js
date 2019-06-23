@@ -32,6 +32,13 @@ describe('Game Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
+  xdescribe(`GET /api/game/:user_id`, () => {
+    it(`responds with 401 'Missing basic token' when no basic token`, () =>
+      supertest(app)
+        .get(`/api/game/123`)
+        .expect(401));
+  });
+
   describe(`GET /api/game/:user_id`, () => {
     context('Given there are user games in the database', () => {
       beforeEach('insert games', () => {

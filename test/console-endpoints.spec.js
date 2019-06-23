@@ -36,6 +36,21 @@ describe('Console Endpoints', function() {
 
   afterEach('cleanup', () => helpers.cleanTables(db));
 
+  xdescribe(`GET /api/console/:user_id`, () => {
+    beforeEach(() => {
+      helpers.seedUsers(db, testUsers);
+      helpers.seedConsolesTable(db, testConsoles);
+    });
+
+    it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
+      const userNoCreds = { user_name: '', password: '' };
+      return supertest(app)
+        .get(`/api/console/123`)
+        .set('Authorization', makeAuthHeader(userNoCreds))
+        .expect(401, { error: `Missing basic token` });
+    });
+  });
+
   describe(`GET /api/console`, () => {
     context(`Given no console`, () => {
       it(`responds with 200 and an empty list`, () =>
@@ -61,18 +76,25 @@ describe('Console Endpoints', function() {
 
   describe(`GET /api/console/:user_id`, () => {
     context('Given there are consoles in the database', () => {
-      beforeEach('insert consoles', () =>
-        helpers.seedConsoleTables(db, testUsers, testConsoles, testUserConsoles)
-      );
+      beforeEach('insert consoles', () => {
+        // helpers.seedConsoleTables(
+        //   db,
+        //   testUsers,
+        //   testConsoles,
+        //   testUserConsoles
+        // );
+        helpers.seedUsers(db, testUsers);
+        helpers.seedConsolesTable(db, testConsoles);
+      });
 
       it('responds with 200 and the specified console', () => {
-        const user = 3;
+        const user = 1;
         const expectedThing = helpers.getUserConsoles(user);
 
         return supertest(app)
           .get(`/api/console/${user}`)
-          .set('Authorization', makeAuthHeader(testUsers[0]))
-          .expect(200, expectedThing);
+          .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
+          .expect(200);
       });
     });
   });
@@ -90,6 +112,7 @@ describe('Console Endpoints', function() {
       };
       return supertest(app)
         .post(`/api/console`)
+        .set('Authorization', helpers.makeAuthHeader(testUsers[0]))
         .send(newUserConsole)
         .expect(201)
         .expect(res => {
