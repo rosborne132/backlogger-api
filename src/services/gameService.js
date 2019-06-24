@@ -1,6 +1,9 @@
 const GameService = {
-  getAllGames(knex) {
-    return knex.select('*').from('backlogger_user_games');
+  getUserGame(knex, gameId) {
+    return knex
+      .select('*')
+      .from('backlogger_user_games')
+      .where('id', gameId);
   },
   getAllUserGames(knex, id) {
     return knex

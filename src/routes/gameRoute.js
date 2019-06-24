@@ -78,6 +78,15 @@ gameRouter
 gameRouter
   .route('/game/:game_id')
   // .all(requireAuth)
+  .get((req, res, next) => {
+    const knexInstance = req.app.get('db');
+    const { game_id } = req.params;
+    GameService.getUserGame(knexInstance, game_id)
+      .then(games => {
+        res.json(games);
+      })
+      .catch(err => console.log(err));
+  })
   .patch(bodyParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
     const { game_id } = req.params;
