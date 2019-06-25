@@ -63,7 +63,7 @@ gameRouter.route('/game').post(bodyParser, (req, res, next) => {
 });
 
 gameRouter
-  .route('/game/:user_id')
+  .route('/games/:user_id')
   // .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
