@@ -12,3 +12,7 @@ CREATE TABLE backlogger_user_games (
   user_id INTEGER REFERENCES backlogger_users(id) ON DELETE CASCADE,
   date_created TIMESTAMP NOT NULL DEFAULT now()
 );
+
+ALTER TABLE backlogger_user_games
+  ADD COLUMN
+    is_complete BOOLEAN DEFAULT FALSE;

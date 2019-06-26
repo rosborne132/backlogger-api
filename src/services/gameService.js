@@ -1,4 +1,11 @@
 const GameService = {
+  getMaxGameId(knex) {
+    return knex
+      .select('id')
+      .from('backlogger_user_games')
+      .orderBy('id', 'desc')
+      .first();
+  },
   getUserGame(knex, gameId) {
     return knex
       .select('*')
