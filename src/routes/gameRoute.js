@@ -7,8 +7,8 @@ const bodyParser = express.json();
 
 const { requireAuth } = require('../middleware/basic-auth');
 
-gameRouter.route('/game').post(bodyParser, (req, res, next) => {
-  // gameRouter.route('/game').post(requireAuth, bodyParser, (req, res, next) => {
+// gameRouter.route('/game').post(bodyParser, (req, res, next) => {
+gameRouter.route('/game').post(requireAuth, bodyParser, (req, res, next) => {
   const knexInstance = req.app.get('db');
   const {
     title,
@@ -20,8 +20,9 @@ gameRouter.route('/game').post(bodyParser, (req, res, next) => {
     game_rating,
     game_cover,
     console_id,
-    user_id,
   } = req.body;
+
+  const user_id = req.user.id;
 
   const newUserGame = {
     title,
@@ -63,11 +64,11 @@ gameRouter.route('/game').post(bodyParser, (req, res, next) => {
 });
 
 gameRouter
-  .route('/games/:user_id')
-  // .all(requireAuth)
+  .route('/games')
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
-    const { user_id } = req.params;
+    const user_id = req.user.id;
     GameService.getAllUserGames(knexInstance, user_id)
       .then(games => {
         res.json(games);
@@ -77,7 +78,7 @@ gameRouter
 
 gameRouter
   .route('/game/:game_id')
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     const { game_id } = req.params;
@@ -127,7 +128,7 @@ gameRouter
 
 gameRouter
   .route('/gameId')
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     GameService.getMaxGameId(knexInstance)

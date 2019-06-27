@@ -9,6 +9,7 @@ const { requireAuth } = require('../middleware/basic-auth');
 
 consoleRouter
   .route('/console')
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     ConsoleService.getAllConsoles(knexInstance)
@@ -22,11 +23,13 @@ consoleRouter
       })
       .catch(next);
   })
-  .post(bodyParser, (req, res, next) => {
-    // .post(requireAuth, bodyParser, (req, res, next) => {
+  // .post(bodyParser, (req, res, next) => {
+  .post(requireAuth, bodyParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
-    const { console_id, user_id } = req.body;
-    const newUserConsole = { console_id, user_id };
+    const { console_id } = req.body;
+    const newUserConsole = { console_id };
+    newUserConsole.user_id = req.user.id;
+    console.log(newUserConsole);
 
     ConsoleService.insertUserConsole(knexInstance, newUserConsole)
       .then(consoles => {
@@ -39,11 +42,11 @@ consoleRouter
   });
 
 consoleRouter
-  .route('/console/:user_id')
-  // .all(requireAuth)
+  .route('/consoles')
+  .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
-    const { user_id } = req.params;
+    const user_id = req.user.id;
     ConsoleService.getAllUserConsoles(knexInstance, user_id)
       .then(consoles => {
         if (!consoles) {
