@@ -5,7 +5,7 @@ const ConsoleService = require('../services/consoleService');
 const consoleRouter = express.Router();
 const bodyParser = express.json();
 
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 consoleRouter
   .route('/console')

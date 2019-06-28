@@ -8,6 +8,8 @@ require('dotenv').config();
 const { NODE_ENV, CLIENT_ORIGIN_LOCAL } = require('./config');
 const errorHandler = require('./errorHandling');
 const { consoleRouter, gameRouter } = require('./routes');
+const authRouter = require('./auth/auth-router');
+const usersRouter = require('./users/users-router');
 
 const app = express();
 
@@ -36,6 +38,8 @@ app.use(helmet());
 
 app.use('/api/', consoleRouter);
 app.use('/api/', gameRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/users', usersRouter);
 
 // Error Handling
 app.use(errorHandler);

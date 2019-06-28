@@ -5,7 +5,7 @@ const GameService = require('../services/gameService');
 const gameRouter = express.Router();
 const bodyParser = express.json();
 
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 // gameRouter.route('/game').post(bodyParser, (req, res, next) => {
 gameRouter.route('/game').post(requireAuth, bodyParser, (req, res, next) => {

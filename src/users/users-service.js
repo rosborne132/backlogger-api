@@ -6,7 +6,7 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 
 const UsersService = {
   hasUserWithUserName(db, user_name) {
-    return db('thingful_users')
+    return db('backlogger_users')
       .where({ user_name })
       .first()
       .then(user => !!user);
@@ -14,7 +14,7 @@ const UsersService = {
   insertUser(db, newUser) {
     return db
       .insert(newUser)
-      .into('thingful_users')
+      .into('backlogger_users')
       .returning('*')
       .then(([user]) => user);
   },
@@ -41,7 +41,6 @@ const UsersService = {
       id: user.id,
       full_name: xss(user.full_name),
       user_name: xss(user.user_name),
-      nickname: xss(user.nick_name),
       date_created: new Date(user.date_created),
     };
   },

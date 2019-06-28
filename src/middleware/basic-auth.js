@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 const bcrypt = require('bcryptjs');
 const AuthService = require('../auth/auth-service');
 
@@ -25,16 +26,16 @@ function requireAuth(req, res, next) {
       }
 
       // Not returning consoles
-      return bcrypt
-        .compare(tokenPassword, user.password)
-        .then(passwordsMatch => {
+      return AuthService.comparePasswords(tokenPassword, user.password).then(
+        passwordsMatch => {
           if (!passwordsMatch) {
             return res.status(401).json({ error: 'Unauthorized request' });
           }
 
           req.user = user;
           next();
-        });
+        }
+      );
 
       // req.user = user;
       // next();
