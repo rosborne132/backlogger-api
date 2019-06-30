@@ -20,11 +20,25 @@ const AuthService = {
   createJwt(subject, payload) {
     return jwt.sign(payload, config.JWT_SECRET, {
       subject,
-      expiresIn: config.JWT_EXPIRY,
+      // expiresIn: config.JWT_EXPIRY,
       algorithm: 'HS256',
     });
   },
   verifyJwt(token) {
+    // console.log(
+    //   jwt.verify(
+    //     token,
+    //     config.JWT_SECRET,
+    //     {
+    //       algorithms: ['HS256'],
+    //     },
+    //     (err, result) => {
+    //       if (err) {
+    //         console.log('Auth error', err);
+    //       }
+    //     }
+    //   )
+    // );
     return jwt.verify(token, config.JWT_SECRET, {
       algorithms: ['HS256'],
     });

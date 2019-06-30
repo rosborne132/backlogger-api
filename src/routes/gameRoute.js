@@ -7,7 +7,6 @@ const bodyParser = express.json();
 
 const { requireAuth } = require('../middleware/jwt-auth');
 
-// gameRouter.route('/game').post(bodyParser, (req, res, next) => {
 gameRouter.route('/game').post(requireAuth, bodyParser, (req, res, next) => {
   const knexInstance = req.app.get('db');
   const {
@@ -122,18 +121,6 @@ gameRouter
     GameService.deleteUserGame(knexInstance, game_id)
       .then(numRowsAffected => {
         res.status(204).end();
-      })
-      .catch(err => console.log(err));
-  });
-
-gameRouter
-  .route('/gameId')
-  .all(requireAuth)
-  .get((req, res, next) => {
-    const knexInstance = req.app.get('db');
-    GameService.getMaxGameId(knexInstance)
-      .then(id => {
-        res.json(id);
       })
       .catch(err => console.log(err));
   });

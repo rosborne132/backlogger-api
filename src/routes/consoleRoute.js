@@ -23,7 +23,6 @@ consoleRouter
       })
       .catch(next);
   })
-  // .post(bodyParser, (req, res, next) => {
   .post(requireAuth, bodyParser, (req, res, next) => {
     const knexInstance = req.app.get('db');
     const { console_id } = req.body;
