@@ -26,6 +26,7 @@ const GameService = {
       .then(rows => rows[0]);
   },
   deleteUserGame(knex, id) {
+    console.log(`trying to delete ${id}`);
     return knex('backlogger_user_games')
       .where({ id })
       .delete();

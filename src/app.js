@@ -37,9 +37,6 @@ app.use(function(req, res, next) {
 });
 
 app.options('*', cors());
-app.del('/api/game/:game_id', cors(), function(req, res, next) {
-  res.json({ msg: 'This is CORS-enabled for all origins!' });
-});
 
 app.use(helmet());
 

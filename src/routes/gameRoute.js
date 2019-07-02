@@ -109,8 +109,8 @@ gameRouter
     };
 
     GameService.updateUserGame(knexInstance, game_id, gameToUpdate)
-      .then(numRowsAffected => {
-        res.status(204).end();
+      .then(updatedGame => {
+        res.json(updatedGame);
       })
       .catch(err => console.log(err));
   })
