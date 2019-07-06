@@ -1,6 +1,5 @@
 INSERT INTO backlogger_consoles (title)
 VALUES
-  ('Xbox 360'),
   ('ColecoVision'),
   ('PlayStation'),
   ('PlayStation 2'),
