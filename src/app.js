@@ -4,7 +4,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 require('dotenv').config();
-const { NODE_ENV, CLIENT_ORIGIN_LOCAL } = require('./config');
+const { NODE_ENV } = require('./config');
 const errorHandler = require('./errorHandling');
 const { consoleRouter, gameRouter } = require('./routes');
 const authRouter = require('./auth/auth-router');
@@ -17,12 +17,6 @@ app.use(
     skip: () => NODE_ENV === 'test',
   })
 );
-
-// app.use(
-//   cors({
-//     origin: CLIENT_ORIGIN_LOCAL,
-//   })
-// );
 
 app.use(cors());
 

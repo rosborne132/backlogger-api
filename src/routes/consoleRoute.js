@@ -9,7 +9,7 @@ const { requireAuth } = require('../middleware/jwt-auth');
 
 consoleRouter
   .route('/console')
-  .all(requireAuth)
+  // .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     ConsoleService.getAllConsoles(knexInstance)
@@ -42,7 +42,7 @@ consoleRouter
 
 consoleRouter
   .route('/consoles')
-  .all(requireAuth)
+  // .all(requireAuth)
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     const user_id = req.user.id;
