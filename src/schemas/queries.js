@@ -9,16 +9,26 @@ const {
 const { consoleService } = require('../services');
 
 const app = require('../app');
-const { ConsoleType, UserConsoleType } = require('./types');
+const { ConsoleType, UserConsoleType, UserType } = require('./types');
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   type: 'Query',
   fields: {
+    dummyField: { type: GraphQLID },
+    user: {
+      type: UserType,
+      resolve(parentValue, args, req) {
+        // console.log(req.user);
+        // return req.user;
+      },
+    },
     consoles: {
       type: new GraphQLList(ConsoleType),
-      resolve() {
+      resolve(parentValue, args, req) {
         const knexInstance = app.get('db');
+        console.log(req.user);
+
         return consoleService
           .getAllConsoles(knexInstance)
           .then(res => res)
@@ -27,9 +37,10 @@ const RootQuery = new GraphQLObjectType({
     },
     userConsoles: {
       type: new GraphQLList(UserConsoleType),
-      resolve(context) {
-        console.log(context);
-        const user_id = 1;
+      resolve(parentValue, args, req) {
+        // console.log(req);
+        const user_id = 2;
+        console.log(req.user);
         // const user_id = context.req.user.id;
         const knexInstance = app.get('db');
         return consoleService
