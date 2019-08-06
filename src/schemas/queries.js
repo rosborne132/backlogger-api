@@ -25,9 +25,12 @@ const RootQuery = new GraphQLObjectType({
     },
     consoles: {
       type: new GraphQLList(ConsoleType),
-      resolve(parentValue, args, req) {
+      resolve(parentValue, args, context) {
         const knexInstance = app.get('db');
-        console.log(req.user);
+        // console.log(context);
+        console.log(context.headers);
+        console.log(context.user);
+        // console.log(req.user);
 
         return consoleService
           .getAllConsoles(knexInstance)
@@ -37,10 +40,11 @@ const RootQuery = new GraphQLObjectType({
     },
     userConsoles: {
       type: new GraphQLList(UserConsoleType),
-      resolve(parentValue, args, req) {
+      resolve(parentValue, args, context) {
         // console.log(req);
         const user_id = 2;
-        console.log(req.user);
+        console.log(context);
+        // console.log(req.user);
         // const user_id = context.req.user.id;
         const knexInstance = app.get('db');
         return consoleService

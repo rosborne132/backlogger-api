@@ -24,10 +24,13 @@ const schema = new GraphQLSchema({
 
 app.use(
   '/graphql',
-  graphqlHTTP(req => ({
+  graphqlHTTP((req, res) => ({
     schema,
-    context: { req },
     graphiql: true,
+    context: {
+      headers: req.headers,
+      user: req.user,
+    },
   }))
 );
 
