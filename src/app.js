@@ -1,14 +1,10 @@
-const express = require('express');
-const morgan = require('morgan');
 const cors = require('cors');
+const express = require('express');
 const helmet = require('helmet');
-// const passport = require('passport');
-// const session = require('express-session');
-// const bodyParser = require('body-parser');
-
-// const initPassport = require('./auth/passport-config');
-
-// initPassport(passport);
+const morgan = require('morgan');
+const passport = require('passport');
+const session = require('express-session');
+const uuid = require('uuid');
 
 require('dotenv').config();
 const { NODE_ENV } = require('./config');
@@ -19,18 +15,20 @@ const usersRouter = require('./users/users-router');
 
 const app = express();
 
-// app.use(
-//   session({
-//     resave: false,
-//     saveUninitialized: false,
-//     secret: 'aaabbbccc',
-//   })
-// );
+const SESSION_SECRECT = 'bad secret';
 
-// app.use(bodyParser.json());
+app.use(
+  session({
+    genid: req => uuid(),
+    secret: SESSION_SECRECT,
+    resave: false,
+    saveUninitialized: false,
+    // cookie: { secure: true },
+  })
+);
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(
   morgan(NODE_ENV === 'production' ? 'tiny' : 'common', {
