@@ -9,6 +9,11 @@ const AuthService = {
       .where({ user_name })
       .first();
   },
+  getUserById(db, id) {
+    return db('backlogger_users')
+      .where({ id })
+      .first();
+  },
   comparePasswords(password, hash) {
     return bcrypt.compare(password, hash);
   },

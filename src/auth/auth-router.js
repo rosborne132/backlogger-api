@@ -38,8 +38,22 @@ authRouter.post('/login', jsonBodyParser, (req, res, next) => {
         const token = {
           authToken: AuthService.createJwt(sub, payload),
         };
+
+        req.user = dbUser.id;
+
+        // res
+        //   .cookie('access-token', AuthService.createJwt(sub, payload), {
+        //     httpOnly: false,
+        //   })
+        //   .send(token);
+
+        res
+          .status(200)
+          .send(token)
+          .json({ token });
+
         console.log(token);
-        res.send(token);
+        // res.send(token);
       });
     })
     .catch(next);

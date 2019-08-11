@@ -52,8 +52,10 @@ const RootMutation = new GraphQLObjectType({
         user_name: { type: GraphQLString },
         password: { type: GraphQLString },
       },
-      resolve(parentValue, { user_name, password }, req, res) {
-        return AuthService.login({ user_name, password, req, res });
+      resolve(parentValue, { user_name, password }, context) {
+        // console.log(req);
+        // console.log(context.user);
+        return AuthService.login({ user_name, password }, context.req);
       },
     },
     logout: {
