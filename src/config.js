@@ -8,5 +8,5 @@ module.exports = {
   TEST_DB_URL: 'postgresql://postgres@localhost/backlogger-test',
   CLIENT_ORIGIN_LOCAL: 'http://localhost:3000/',
   CLIENT_ORIGIN_PROD: 'https://backlogger-app.rosborne132.now.sh/',
-  JWT_SECRET: process.env.JWT_SECRET || 'change-this-secret',
+  SESSION_SECRECT: process.env.SESSION_SECRECT || 'change-this-secret',
 };

@@ -19,7 +19,6 @@ const RootQuery = new GraphQLObjectType({
     user: {
       type: UserType,
       resolve(parentValue, args, context) {
-        console.log(context.user);
         return context.user;
       },
     },

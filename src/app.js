@@ -9,13 +9,14 @@ const uuid = require('uuid');
 require('dotenv').config();
 const { NODE_ENV } = require('./config');
 const errorHandler = require('./errorHandling');
+
 const { consoleRouter, gameRouter } = require('./routes');
 const authRouter = require('./auth/auth-router');
 const usersRouter = require('./users/users-router');
 
-const app = express();
+const { SESSION_SECRECT } = require('./config');
 
-const SESSION_SECRECT = 'bad secret';
+const app = express();
 
 app.use(
   session({
