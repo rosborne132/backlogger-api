@@ -6,10 +6,15 @@ const {
   GraphQLSchema,
   GraphQLList,
 } = require('graphql');
-const { consoleService } = require('../services');
+const { consoleService, gameService } = require('../services');
 
 const app = require('../app');
-const { ConsoleType, UserConsoleType, UserType } = require('./types');
+const {
+  ConsoleType,
+  UserConsoleType,
+  UserGames,
+  UserType,
+} = require('./types');
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
@@ -18,8 +23,8 @@ const RootQuery = new GraphQLObjectType({
     dummyField: { type: GraphQLID },
     user: {
       type: UserType,
-      resolve(parentValue, args, context) {
-        return context.user;
+      resolve(parentValue, args, { user }) {
+        return user;
       },
     },
     consoles: {
@@ -35,11 +40,20 @@ const RootQuery = new GraphQLObjectType({
     },
     userConsoles: {
       type: new GraphQLList(UserConsoleType),
-      resolve(parentValue, args, context) {
-        const user_id = context.user.id;
+      resolve(parentValue, args, { user }) {
         const knexInstance = app.get('db');
         return consoleService
-          .getAllUserConsoles(knexInstance, user_id)
+          .getAllUserConsoles(knexInstance, user.id)
+          .then(res => res)
+          .catch(err => console.log(err));
+      },
+    },
+    userGames: {
+      type: new GraphQLList(UserGames),
+      resolve(parentValue, args, { user }) {
+        const knexInstance = app.get('db');
+        return gameService
+          .getAllUserGames(knexInstance, user.id)
           .then(res => res)
           .catch(err => console.log(err));
       },

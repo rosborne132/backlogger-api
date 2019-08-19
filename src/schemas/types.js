@@ -1,9 +1,13 @@
 /* eslint-disable camelcase */
 const graphql = require('graphql');
 
-const { GraphQLObjectType, GraphQLString, GraphQLList, GraphQLID } = graphql;
-const { consoleService, gameService } = require('../services');
-const app = require('../app');
+const {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLID,
+} = graphql;
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -31,4 +35,23 @@ const UserConsoleType = new GraphQLObjectType({
   }),
 });
 
-module.exports = { ConsoleType, UserType, UserConsoleType };
+const UserGames = new GraphQLObjectType({
+  name: 'UserGames',
+  fields: () => ({
+    id: { type: GraphQLID },
+    title: { type: GraphQLString },
+    time_to_complete: { type: GraphQLString },
+    notes: { type: GraphQLString },
+    current_game: { type: GraphQLBoolean },
+    summary: { type: GraphQLString },
+    story: { type: GraphQLString },
+    game_rating: { type: GraphQLFloat },
+    game_cover: { type: GraphQLString },
+    console_id: { type: GraphQLString },
+    user_id: { type: GraphQLString },
+    date_created: { type: GraphQLString },
+    is_complete: { type: GraphQLBoolean },
+  }),
+});
+
+module.exports = { ConsoleType, UserConsoleType, UserGames, UserType };

@@ -3,10 +3,18 @@ const graphql = require('graphql');
 const app = require('../app');
 const consoleService = require('../services/consoleService');
 
+const gameHelpers = require('../helper/gameHelper');
+
 const AuthService = require('../auth/auth');
 
-const { GraphQLObjectType, GraphQLID, GraphQLString } = graphql;
-const { ConsoleType, UserType } = require('./types');
+const {
+  GraphQLBoolean,
+  GraphQLFloat,
+  GraphQLID,
+  GraphQLObjectType,
+  GraphQLString,
+} = graphql;
+const { ConsoleType, UserGames, UserType } = require('./types');
 
 const RootMutation = new GraphQLObjectType({
   name: 'RootMutationType',
@@ -35,9 +43,9 @@ const RootMutation = new GraphQLObjectType({
     },
     logout: {
       type: UserType,
-      resolve(parentValue, args, req) {
-        const { user } = req;
-        req.logout();
+      resolve(parentValue, args, context) {
+        const { user } = context;
+        context.logout();
         return user;
       },
     },
@@ -55,6 +63,23 @@ const RootMutation = new GraphQLObjectType({
           .insertUserConsole(knexInstance, newUserConsole)
           .then(res => res)
           .catch(err => console.log(err));
+      },
+    },
+    addUserGame: {
+      type: UserGames,
+      args: {
+        title: { type: GraphQLString },
+        time_to_complete: { type: GraphQLString },
+        notes: { type: GraphQLString },
+        current_game: { type: GraphQLBoolean },
+        summary: { type: GraphQLString },
+        story: { type: GraphQLString },
+        game_rating: { type: GraphQLFloat },
+        game_cover: { type: GraphQLString },
+        console_id: { type: GraphQLString },
+      },
+      resolve(parentValue, args, { user }) {
+        gameHelpers.insertUserGame(args, user.id);
       },
     },
   },
