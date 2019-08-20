@@ -79,7 +79,31 @@ const RootMutation = new GraphQLObjectType({
         console_id: { type: GraphQLString },
       },
       resolve(parentValue, args, { user }) {
-        gameHelpers.insertUserGame(args, user.id);
+        return gameHelpers.insertUserGame(args, user.id);
+      },
+    },
+    editUserGame: {
+      type: UserGames,
+      args: {
+        id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        time_to_complete: { type: GraphQLString },
+        notes: { type: GraphQLString },
+        current_game: { type: GraphQLBoolean },
+        console_id: { type: GraphQLString },
+        is_complete: { type: GraphQLBoolean },
+      },
+      resolve(parentValue, args) {
+        return gameHelpers.editUserGame(args);
+      },
+    },
+    deleteUserGame: {
+      type: UserGames,
+      args: {
+        id: { type: GraphQLID },
+      },
+      resolve(parentValue, { id }) {
+        return gameHelpers.deleteUserGame(id);
       },
     },
   },

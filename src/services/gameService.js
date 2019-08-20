@@ -6,11 +6,12 @@ const GameService = {
       .orderBy('id', 'desc')
       .first();
   },
-  getUserGame(knex, gameId) {
+  getUserGame(knex, id) {
     return knex
       .select('*')
       .from('backlogger_user_games')
-      .where('id', gameId);
+      .where({ id })
+      .first();
   },
   getAllUserGames(knex, id) {
     return knex
@@ -28,12 +29,15 @@ const GameService = {
   deleteUserGame(knex, id) {
     return knex('backlogger_user_games')
       .where({ id })
-      .delete();
+      .delete()
+      .then(game => game);
   },
   updateUserGame(knex, id, newGameFields) {
     return knex('backlogger_user_games')
       .where({ id })
-      .update(newGameFields);
+      .update(newGameFields)
+      .returning('*')
+      .then(rows => rows[0]);
   },
 };
 

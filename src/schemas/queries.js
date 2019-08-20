@@ -58,6 +58,19 @@ const RootQuery = new GraphQLObjectType({
           .catch(err => console.log(err));
       },
     },
+    userGame: {
+      type: UserGames,
+      args: {
+        id: { type: GraphQLID },
+      },
+      resolve(parentValue, { id }) {
+        const knexInstance = app.get('db');
+        return gameService
+          .getUserGame(knexInstance, id)
+          .then(res => res)
+          .catch(err => console.log(err));
+      },
+    },
   },
 });
 
